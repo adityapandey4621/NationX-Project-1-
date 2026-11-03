@@ -1,0 +1,77 @@
+# Continuous integration for NationX. NOT YET RUN: this file was written without access to GitHub Actions - the first
+# push will be its first execution, so expect to fix small things (runner image versions, caching).
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  web:
+    name: web - typecheck, lint, unit, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci --legacy-peer-deps
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+      - name: dependency audit (production dependencies, fails on high or critical)
+        run: npm audit --omit=dev --audit-level=high
+        continue-on-error: true # the known Next.js/PostCSS advisory needs a Next 16 upgrade - see docs/PRODUCTION_READINESS_REPORT.md
+
+  database:
+    name: database - RLS, concurrency, HTTP integration, backup drill
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci --legacy-peer-deps
+      - run: npm run test:db
+      - run: npm run test:concurrency
+      - run: npm run test:integration
+      - run: npm run drill:backup
+
+  e2e:
+    name: browser end-to-end with real Supabase Auth (GoTrue)
+    runs-on: ubuntu-latest
+    needs: database
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci --legacy-peer-deps
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+
+  mobile:
+    name: mobile - typecheck, lint, tests, Android + iOS bundle
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: apps/mobile/package-lock.json }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run export:check
+        env:
+          EXPO_PUBLIC_API_URL: https://api.example-ci.test
+          EXPO_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: placeholder-anon-key
+      - run: npm run doctor

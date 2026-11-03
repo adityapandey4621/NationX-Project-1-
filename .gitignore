@@ -1,0 +1,83 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# Next.js build output
+/.next/
+/.next-integration/
+/out/
+
+# Production
+/build
+/dist
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env*.local
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# IDE and Editor files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Testing
+/coverage
+/playwright-report
+/test-results
+
+# Expo / React Native
+.expo/
+web-build/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Supabase local config
+supabase/.temp
+
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Mobile app build output / local env
+/apps/mobile/node_modules/
+/apps/mobile/.export-check/
+/apps/mobile/.expo/
+/apps/mobile/.env
+/apps/mobile/.env.local
+/.next-devstack/
+/.next-e2e-dev/
+
+# Exclude markdown and internal project/planning files
+*.md
+docs/
+Project-1/
+.claude/
+.claude.skills/

@@ -1,0 +1,12 @@
+node_modules
+.next
+.next-integration
+.git
+.env
+.env.*
+!.env.example
+apps
+supabase/tests
+docs
+Project-1
+*.log
