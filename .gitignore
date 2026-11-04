@@ -65,19 +65,10 @@ supabase/.temp
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
-
-# Mobile app build output / local env
-/apps/mobile/node_modules/
-/apps/mobile/.export-check/
-/apps/mobile/.expo/
-/apps/mobile/.env
-/apps/mobile/.env.local
-/.next-devstack/
-/.next-e2e-dev/
+.env.example
 
 # Exclude markdown and internal project/planning files
 *.md
 docs/
-Project-1/
 .claude/
 .claude.skills/
